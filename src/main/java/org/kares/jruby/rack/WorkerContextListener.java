@@ -27,21 +27,27 @@ import org.kares.jruby.WorkerManager;
  * @author kares <self_AT_kares_DOT_org>
  */
 public class WorkerContextListener implements ServletContextListener {
-    
+
     private WorkerManager workerManager;
 
     /**
      * @param event
      */
     public void contextInitialized(final ServletContextEvent event) {
-        getWorkerManager( event.getServletContext() ).startup();
+        final String enableWorkers = System.getenv("ENABLE_WORKERS");
+        if (enableWorkers != null && enableWorkers.equals("true")) {
+            getWorkerManager( event.getServletContext() ).startup();
+        }
     }
 
     /**
      * @param event
      */
     public void contextDestroyed(final ServletContextEvent event) {
-        getWorkerManager( event.getServletContext() ).shutdown();
+        final String enableWorkers = System.getenv("ENABLE_WORKERS");
+        if (enableWorkers != null && enableWorkers.equals("true")) {
+           getWorkerManager( event.getServletContext() ).shutdown();
+        }
     }
 
     private WorkerManager getWorkerManager(final ServletContext context) {
@@ -54,5 +60,5 @@ public class WorkerContextListener implements ServletContextListener {
     void setWorkerManager(WorkerManager workerManager) {
         this.workerManager = workerManager;
     }
-    
+
 }
